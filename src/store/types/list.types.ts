@@ -12,7 +12,7 @@ export interface ListState {
   error: string | undefined;
 }
 
-export const initialState: ListState = {
+export const listInitialState: ListState = {
   loading: false,
   list: [],
   error: undefined,

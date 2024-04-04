@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {
   Dimensions,
   Image,
@@ -9,11 +9,14 @@ import {
   View,
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
-import {Contact, RootStackParamList} from '../App';
+import {RootStackParamList} from '../App';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useAppDispatch, useAppSelector} from '../store';
+import {detailSelector, fetchDetail} from '../store/slices';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let screenHeight = Dimensions.get('window').height;
 let screenWidth = Dimensions.get('window').width;
@@ -33,32 +36,50 @@ const DetailScreen: React.FC<Props> = ({
   route,
   navigation,
 }): React.JSX.Element => {
-  const item = route.params.item as Contact;
+  const id = route?.params?.id ?? '';
+
+  const dispatch = useAppDispatch();
+  const contacts = useAppSelector(detailSelector);
 
   const handleNavigateToEdit = () => {
-    navigation.navigate('Edit', {item});
+    navigation.navigate('Edit', {id});
   };
+
+  const getDetail = useCallback(() => {
+    dispatch(fetchDetail(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    getDetail();
+  }, [getDetail]);
 
   return (
     <SafeAreaView>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.container}>
         <View style={styles.photoContainer}>
-          <Image
-            source={{
-              uri: item?.photo?.includes('http')
-                ? item?.photo
-                : 'https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg',
-            }}
-            style={styles.photo}
-          />
+          {contacts?.data?.photo?.includes('http') ? (
+            <Image
+              source={{
+                uri: contacts?.data?.photo,
+              }}
+              style={styles.photo}
+            />
+          ) : (
+            <Ionicons
+              name="person-circle-sharp"
+              size={150}
+              color={'#C7C8CC'}
+              style={styles.noPhoto}
+            />
+          )}
         </View>
         <View style={styles.cardContainer}>
           <View style={styles.card}>
             <Text style={styles.name}>
-              {item?.firstName + ' ' + item?.lastName}
+              {contacts?.data?.firstName + ' ' + contacts?.data?.lastName}
             </Text>
-            <Text>{item?.age}</Text>
+            <Text>{contacts?.data?.age}</Text>
             <Text style={styles.number}>{'+62 812 34567891'}</Text>
           </View>
         </View>
@@ -71,25 +92,37 @@ const DetailScreen: React.FC<Props> = ({
           <Text style={styles.callLogTitle}>Call Logs</Text>
 
           <View style={styles.callLog}>
-            <SimpleLineIcons name="call-in" />
-            <Text>Incoming Call</Text>
+            <View style={styles.logInfo}>
+              <SimpleLineIcons name="call-in" />
+              <Text>Incoming Call</Text>
+            </View>
             <Text>April 4, 16:46</Text>
           </View>
 
           <View style={styles.callLog}>
-            <Icon name="message" />
-            <Text>Message</Text>
+            <View style={styles.logInfo}>
+              <Icon name="message" />
+              <Text>Message</Text>
+            </View>
+
             <Text>April 4, 15:46</Text>
           </View>
+
           <View style={styles.callLog}>
-            <SimpleLineIcons name="call-out" />
-            <Text>Outgoing Call</Text>
+            <View style={styles.logInfo}>
+              <SimpleLineIcons name="call-out" />
+              <Text>Outgoing Call</Text>
+            </View>
+
             <Text>April 4, 14:46</Text>
           </View>
 
           <View style={styles.callLog}>
-            <SimpleLineIcons name="call-end" />
-            <Text>Missed Call</Text>
+            <View style={styles.logInfo}>
+              <SimpleLineIcons name="call-end" />
+              <Text>Missed Call</Text>
+            </View>
+
             <Text>April 4, 13:46</Text>
           </View>
         </View>
@@ -113,10 +146,16 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     backgroundColor: 'transparent',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   photo: {
     height: (40 / 100) * screenHeight,
     borderRadius: 60,
+  },
+  noPhoto: {
+    marginBottom: 40,
   },
   cardContainer: {
     display: 'flex',
@@ -183,6 +222,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     fontSize: 18,
+  },
+  logInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
   },
 });
 

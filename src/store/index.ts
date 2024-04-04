@@ -1,13 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import listReducer from './slices/list-slice';
-
-// Import your slices and reducers here
+import detailReducer from './slices/detail-slice';
 
 const store = configureStore({
   reducer: {
     listReducer,
-    // Combine your reducers here
+    detailReducer,
   },
 });
 

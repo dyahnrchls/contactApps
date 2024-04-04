@@ -1,6 +1,6 @@
 import {PayloadAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../index';
-import {Contact, initialState} from '../types/list.types';
+import {Contact, listInitialState} from '../types/list.types';
 
 export const fetchLists = createAsyncThunk('lists/fetchLists', () => {
   const res = fetch('https://contact.herokuapp.com/contact').then(data =>
@@ -11,7 +11,7 @@ export const fetchLists = createAsyncThunk('lists/fetchLists', () => {
 
 const listSlice = createSlice({
   name: 'list',
-  initialState,
+  initialState: listInitialState,
   extraReducers: builder => {
     builder.addCase(fetchLists.pending, state => {
       state.loading = true;

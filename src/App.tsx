@@ -8,19 +8,11 @@ import EditScreen from './screens/EditScreen';
 import {Provider} from 'react-redux';
 import store from './store';
 
-export interface Contact {
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  photo: string;
-}
-
 export type RootStackParamList = {
   Contacts: undefined; // no params
-  Detail: {item?: Contact};
+  Detail: {id: string};
   Add: undefined;
-  Edit: {item?: Contact};
+  Edit: {id: string};
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

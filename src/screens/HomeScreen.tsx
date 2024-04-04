@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Contact, RootStackParamList} from '../App';
+import {RootStackParamList} from '../App';
 import {AlphabetList} from 'react-native-section-alphabet-list';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useAppDispatch, useAppSelector} from '../store';
@@ -26,8 +26,8 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const contacts = useAppSelector(listSelector);
 
-  const handleNavigateToDetail = (item: Contact) => {
-    navigation.navigate('Detail', {item});
+  const handleNavigateToDetail = (id: string) => {
+    navigation.navigate('Detail', {id});
   };
 
   const handleNavigateToAdd = () => {
@@ -58,7 +58,7 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
           <TouchableOpacity
             key={item.key}
             style={styles.contactContainer}
-            onPress={() => handleNavigateToDetail(item as any)}>
+            onPress={() => handleNavigateToDetail(item.key)}>
             <Text style={styles.contactName}>{item.value}</Text>
           </TouchableOpacity>
         )}
