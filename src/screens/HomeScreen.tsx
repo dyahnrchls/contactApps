@@ -1,15 +1,14 @@
 import React from 'react';
 import {
-  Image,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {Contact, RootStackParamList} from '../App';
+import {AlphabetList} from 'react-native-section-alphabet-list';
 
 const mockData: Contact[] = [
   {
@@ -125,7 +124,10 @@ const mockData: Contact[] = [
   },
 ];
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Contacts'
+>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -138,54 +140,56 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
 
   return (
     <SafeAreaView>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>Contacts {`(${mockData?.length})`}</Text>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        {mockData?.map(item => (
+      <AlphabetList
+        style={styles.container}
+        data={mockData?.map(item => ({
+          value: item.firstName + ' ' + item.lastName,
+          key: item.id,
+        }))}
+        renderCustomItem={item => (
           <TouchableOpacity
-            key={item.id}
-            style={styles.container}
-            onPress={() => handleNavigateToDetail(item)}>
-            <Image
-              source={{
-                uri: item.photo?.includes('http')
-                  ? item.photo
-                  : 'https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg',
-              }}
-              style={styles.photo}
-            />
-            <Text style={styles.name}>
-              {item.firstName + ' ' + item.lastName}
-            </Text>
+            key={item.key}
+            style={styles.contactContainer}
+            onPress={() => handleNavigateToDetail(item as any)}>
+            <Text style={styles.contactName}>{item.value}</Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        )}
+        renderCustomSectionHeader={section => (
+          <View style={styles.contactTitleContainer}>
+            <Text style={styles.contactTitle}> {section.title}</Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 16,
-    color: 'black',
-  },
   container: {
+    // flex: 1,
+    backgroundColor: 'white',
+  },
+  contactContainer: {
     display: 'flex',
     flexDirection: 'row',
     gap: 16,
     alignItems: 'center',
-    padding: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderBottomWidth: 0.2,
   },
-  photo: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-  },
-  name: {
+  contactName: {
     fontSize: 16,
     color: 'black',
+  },
+  contactTitleContainer: {
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 0.2,
+  },
+  contactTitle: {
+    paddingBottom: 8,
+    borderBottomWidth: 0.2,
   },
 });
 

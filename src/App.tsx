@@ -13,7 +13,7 @@ export interface Contact {
 }
 
 export type RootStackParamList = {
-  Home: undefined; // no params
+  Contacts: undefined; // no params
   Detail: {item?: Contact};
 };
 
@@ -24,9 +24,9 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
+          name="Contacts"
           component={HomeScreen}
-          options={{headerShown: false}}
+          // options={{headerShown: false}}
         />
         <Stack.Screen
           name="Detail"
