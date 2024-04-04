@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import DetailScreen from './screens/DetailScreen';
+import AddScreen from './screens/AddScreen';
+import EditScreen from './screens/EditScreen';
 
 export interface Contact {
   id: string;
@@ -15,6 +17,8 @@ export interface Contact {
 export type RootStackParamList = {
   Contacts: undefined; // no params
   Detail: {item?: Contact};
+  Add: undefined;
+  Edit: {item?: Contact};
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -23,14 +27,20 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Contacts"
-          component={HomeScreen}
-          // options={{headerShown: false}}
-        />
+        <Stack.Screen name="Contacts" component={HomeScreen} />
         <Stack.Screen
           name="Detail"
           component={DetailScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Add"
+          component={AddScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Edit"
+          component={EditScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

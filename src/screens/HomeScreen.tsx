@@ -9,6 +9,7 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {Contact, RootStackParamList} from '../App';
 import {AlphabetList} from 'react-native-section-alphabet-list';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const mockData: Contact[] = [
   {
@@ -138,6 +139,10 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
     navigation.navigate('Detail', {item});
   };
 
+  const handleNavigateToAdd = () => {
+    navigation.navigate('Add');
+  };
+
   return (
     <SafeAreaView>
       <AlphabetList
@@ -160,13 +165,17 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
           </View>
         )}
       />
+      <TouchableOpacity
+        style={styles.addButtonContainer}
+        onPress={handleNavigateToAdd}>
+        <Icon name="add-circle" size={50} color={'#2C7865'} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     backgroundColor: 'white',
   },
   contactContainer: {
@@ -190,6 +199,11 @@ const styles = StyleSheet.create({
   contactTitle: {
     paddingBottom: 8,
     borderBottomWidth: 0.2,
+  },
+  addButtonContainer: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
   },
 });
 

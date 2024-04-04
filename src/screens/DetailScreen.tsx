@@ -13,18 +13,31 @@ import {Contact, RootStackParamList} from '../App';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 let screenHeight = Dimensions.get('window').height;
 let screenWidth = Dimensions.get('window').width;
 
 type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Detail'>;
+type DetailScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Detail'
+>;
 
 type Props = {
   route: DetailScreenRouteProp;
+  navigation: DetailScreenNavigationProp;
 };
 
-const DetailScreen: React.FC<Props> = ({route}): React.JSX.Element => {
+const DetailScreen: React.FC<Props> = ({
+  route,
+  navigation,
+}): React.JSX.Element => {
   const item = route.params.item as Contact;
+
+  const handleNavigateToEdit = () => {
+    navigation.navigate('Edit', {item});
+  };
 
   return (
     <SafeAreaView>
@@ -82,7 +95,7 @@ const DetailScreen: React.FC<Props> = ({route}): React.JSX.Element => {
         </View>
       </View>
       <View style={styles.footerContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleNavigateToEdit}>
           <Text>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
@@ -139,7 +152,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 16,
-    // backgroundColor: 'white',
   },
   callLogContainer: {
     paddingHorizontal: 16,
