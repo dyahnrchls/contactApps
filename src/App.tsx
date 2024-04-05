@@ -1,10 +1,10 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
-import DetailScreen from './screens/DetailScreen';
-import AddScreen from './screens/AddScreen';
-import EditScreen from './screens/EditScreen';
+import HomeScreen from './screens/Home/HomeScreen';
+import DetailScreen from './screens/Detail/DetailScreen';
+import AddScreen from './screens/Add/AddScreen';
+import EditScreen from './screens/Edit/EditScreen';
 import {Provider} from 'react-redux';
 import store from './store';
 

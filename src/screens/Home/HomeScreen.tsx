@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {
   RefreshControl,
   SafeAreaView,
@@ -8,40 +8,23 @@ import {
   View,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../App';
+import {RootStackParamList} from '../../App';
 import {AlphabetList} from 'react-native-section-alphabet-list';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useAppDispatch, useAppSelector} from '../store';
-import {listSelector, fetchLists} from '../store/slices/list-slice';
+import {useHomeUtil} from './Home.util';
 
-type HomeScreenNavigationProp = StackNavigationProp<
+export type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Contacts'
 >;
 
-type Props = {
-  navigation: HomeScreenNavigationProp;
+export type Props = {
+  navigation?: HomeScreenNavigationProp;
 };
 
 const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
-  const dispatch = useAppDispatch();
-  const contacts = useAppSelector(listSelector);
-
-  const handleNavigateToDetail = (id: string) => {
-    navigation.navigate('Detail', {id});
-  };
-
-  const handleNavigateToAdd = () => {
-    navigation.navigate('Add');
-  };
-
-  const getList = useCallback(() => {
-    dispatch(fetchLists());
-  }, [dispatch]);
-
-  useEffect(() => {
-    getList();
-  }, [getList]);
+  const {handleNavigateToDetail, handleNavigateToAdd, contacts, getList} =
+    useHomeUtil(navigation);
 
   return (
     <SafeAreaView>

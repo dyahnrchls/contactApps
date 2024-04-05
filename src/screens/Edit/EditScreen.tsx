@@ -1,28 +1,20 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   TextInput,
   View,
-  Text,
   TouchableOpacity,
   Image,
-  ToastAndroid,
 } from 'react-native';
-import {RootStackParamList} from '../App';
+import {RootStackParamList} from '../../App';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useAppDispatch, useAppSelector} from '../store';
-import {
-  detailSelector,
-  fetchDetail,
-  resetUpdate,
-  update,
-  updateSelector,
-} from '../store/slices';
+
 import {RouteProp} from '@react-navigation/native';
-import {Contact} from '../store/types';
+import {Button} from '../../components/Button/Button';
+import {useEditUtil} from './Edit.util';
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
@@ -35,103 +27,31 @@ const EditScreen: React.FC<Props> = ({
   navigation,
   route,
 }): React.JSX.Element => {
-  const id = route?.params?.id ?? '';
-
-  const dispatch = useAppDispatch();
-  const contact = useAppSelector(detailSelector);
-  const updateContactSelector = useAppSelector(updateSelector);
-
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [age, setAge] = useState<string>('');
-  // const [phoneNumber, setPhoneNumber] = useState<string>('');
-
-  const showToast = () => {
-    ToastAndroid.show('Failed update data', ToastAndroid.SHORT);
-  };
-
-  const disableButton = () => {
-    if (firstName.length === 0 || lastName.length === 0 || age.length === 0) {
-      return true;
-    }
-
-    if (updateContactSelector?.loading) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const handleCancel = () => {
-    dispatch(resetUpdate());
-    navigation.goBack();
-  };
-
-  const updateContact = async () => {
-    let payload: Contact = {
-      id,
-      firstName,
-      lastName,
-      age: Number(age),
-      photo: contact.data?.photo ?? '',
-    };
-
-    dispatch(update(payload));
-  };
-
-  const getDetail = useCallback(() => {
-    dispatch(fetchDetail(id));
-  }, [dispatch, id]);
-
-  useEffect(() => {
-    getDetail();
-  }, [getDetail]);
-
-  useEffect(() => {
-    if (updateContactSelector?.message === 'success') {
-      dispatch(resetUpdate());
-      navigation.goBack();
-    }
-  }, [updateContactSelector?.message, navigation, dispatch]);
-
-  useEffect(() => {
-    if (updateContactSelector?.error) {
-      showToast();
-    }
-  }, [updateContactSelector]);
-
-  useEffect(() => {
-    if (contact?.data) {
-      setFirstName(contact?.data?.firstName);
-      setLastName(contact?.data?.lastName);
-      setAge(contact?.data?.age?.toString());
-    }
-  }, [contact]);
+  const {
+    disableButton,
+    handleCancel,
+    updateContact,
+    contact,
+    updateContactSelector,
+    setFirstName,
+    setLastName,
+    setAge,
+  } = useEditUtil(route, navigation);
 
   return (
     <SafeAreaView>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.container}>
-        <TouchableOpacity
+        <Button
+          title="Cancel"
           onPress={handleCancel}
-          disabled={updateContactSelector?.loading}>
-          <Text
-            style={
-              updateContactSelector?.loading
-                ? styles.upperButtonDisable
-                : styles.upperButton
-            }>
-            Cancel
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={updateContact} disabled={disableButton()}>
-          <Text
-            style={
-              disableButton() ? styles.upperButtonDisable : styles.upperButton
-            }>
-            Done
-          </Text>
-        </TouchableOpacity>
+          disabled={updateContactSelector?.loading}
+        />
+        <Button
+          title="Done"
+          disabled={disableButton()}
+          onPress={updateContact}
+        />
       </View>
       <View style={styles.content}>
         <TouchableOpacity style={styles.photoContainer}>

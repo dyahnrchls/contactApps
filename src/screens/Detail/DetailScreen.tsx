@@ -1,32 +1,23 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {
-  Alert,
-  BackHandler,
   Dimensions,
   Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   View,
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {RootStackParamList} from '../../App';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useAppDispatch, useAppSelector} from '../store';
-import {
-  detailSelector,
-  fetchDetail,
-  remove,
-  removeSelector,
-  resetRemove,
-  // removeSelector,
-} from '../store/slices';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Button} from '../../components/Button/Button';
+import {CallLog} from '../../components/CallLog/CallLog';
+import {useDetailUtil} from './Detail.util';
 
 let screenHeight = Dimensions.get('window').height;
 let screenWidth = Dimensions.get('window').width;
@@ -46,70 +37,10 @@ const DetailScreen: React.FC<Props> = ({
   route,
   navigation,
 }): React.JSX.Element => {
-  const id = route?.params?.id ?? '';
-
-  const dispatch = useAppDispatch();
-  const contacts = useAppSelector(detailSelector);
-  const deleteState = useAppSelector(removeSelector);
-
-  const showToast = () => {
-    ToastAndroid.show('Failed delete data', ToastAndroid.SHORT);
-  };
-
-  const handleNavigateToEdit = () => {
-    navigation.navigate('Edit', {id});
-  };
-
-  const deleteContact = () => {
-    dispatch(remove(id));
-  };
-
-  const deleteAlert = () => {
-    Alert.alert('Hold on!', 'Are you sure you delete this contact?', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {text: 'YES', onPress: deleteContact},
-    ]);
-  };
-
-  const getDetail = useCallback(() => {
-    dispatch(fetchDetail(id));
-  }, [dispatch, id]);
-
-  useEffect(() => {
-    getDetail();
-  }, [getDetail]);
-
-  useEffect(() => {
-    if (deleteState?.message === 'success') {
-      dispatch(resetRemove());
-      navigation.goBack();
-    }
-  }, [deleteState?.message, navigation, dispatch]);
-
-  useEffect(() => {
-    if (deleteState?.error) {
-      showToast();
-    }
-  }, [deleteState]);
-
-  useEffect(() => {
-    const backAction = () => {
-      dispatch(resetRemove());
-      navigation.goBack();
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, [dispatch, navigation]);
+  const {contacts, handleNavigateToEdit, deleteAlert} = useDetailUtil(
+    route,
+    navigation,
+  );
 
   return (
     <SafeAreaView>
@@ -155,51 +86,44 @@ const DetailScreen: React.FC<Props> = ({
             <View style={styles.callLogContainer}>
               <Text style={styles.callLogTitle}>Call Logs</Text>
 
-              <View style={styles.callLog}>
-                <View style={styles.logInfo}>
-                  <SimpleLineIcons name="call-in" />
-                  <Text>Incoming Call</Text>
-                </View>
-                <Text>April 4, 16:46</Text>
-              </View>
+              <CallLog
+                title="Incoming Call"
+                date="April 4, 16:46"
+                icon={<SimpleLineIcons name="call-in" />}
+              />
 
-              <View style={styles.callLog}>
-                <View style={styles.logInfo}>
-                  <Icon name="message" />
-                  <Text>Message</Text>
-                </View>
+              <CallLog
+                title="Message"
+                date="April 4, 15:46"
+                icon={<Icon name="message" />}
+              />
 
-                <Text>April 4, 15:46</Text>
-              </View>
+              <CallLog
+                title="Outgoing Call"
+                date="April 4, 14:46"
+                icon={<SimpleLineIcons name="call-out" />}
+              />
 
-              <View style={styles.callLog}>
-                <View style={styles.logInfo}>
-                  <SimpleLineIcons name="call-out" />
-                  <Text>Outgoing Call</Text>
-                </View>
-
-                <Text>April 4, 14:46</Text>
-              </View>
-
-              <View style={styles.callLog}>
-                <View style={styles.logInfo}>
-                  <SimpleLineIcons name="call-end" />
-                  <Text>Missed Call</Text>
-                </View>
-
-                <Text>April 4, 13:46</Text>
-              </View>
+              <CallLog
+                title="Missed Call"
+                date="April 4, 13:46"
+                icon={<SimpleLineIcons name="call-end" />}
+              />
             </View>
           </View>
           <View style={styles.footerContainer}>
-            <TouchableOpacity
+            <Button
+              disabled={false}
+              onPress={handleNavigateToEdit}
+              title="Edit"
               style={styles.button}
-              onPress={handleNavigateToEdit}>
-              <Text>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={deleteAlert}>
-              <Text>Delete</Text>
-            </TouchableOpacity>
+            />
+            <Button
+              disabled={false}
+              onPress={deleteAlert}
+              title="Delete"
+              style={styles.button}
+            />
           </View>
         </>
       )}
@@ -276,13 +200,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     fontWeight: '500',
   },
-  callLog: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    fontSize: 12,
-  },
   footerContainer: {
     position: 'absolute',
     display: 'flex',
@@ -298,12 +215,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     fontSize: 18,
-  },
-  logInfo: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 16,
-    alignItems: 'center',
   },
 });
 

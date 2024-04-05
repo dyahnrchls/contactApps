@@ -20,7 +20,7 @@ export const create = createAsyncThunk(
         console.error('Failed to post data');
       }
     } catch (error) {
-      console.log({error});
+      console.error({error});
       throw error;
     }
   },
