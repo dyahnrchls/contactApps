@@ -5,14 +5,20 @@ import {removeInitialState} from '../types';
 export const remove = createAsyncThunk(
   'contacts/remove',
   async (id: string) => {
-    const response = await fetch(
-      `https://contact.herokuapp.com/contact/${id}`,
-      {
-        method: 'delete',
-      },
-    );
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch(
+        `https://contact.herokuapp.com/contact/${id}`,
+        {
+          method: 'delete',
+        },
+      );
+      console.log({response});
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log({error});
+      throw error;
+    }
   },
 );
 
@@ -33,9 +39,15 @@ const removeContactSlice = createSlice({
       state.error = action.error.message;
     });
   },
-  reducers: {},
+  reducers: {
+    resetRemove(state) {
+      state.loading = removeInitialState.loading;
+      state.message = removeInitialState.message;
+      state.error = removeInitialState.error;
+    },
+  },
 });
 
-// export const {addList} = removeSlice.actions;
+export const {resetRemove} = removeContactSlice.actions;
 export const removeSelector = (state: RootState) => state.removeReducer;
 export default removeContactSlice.reducer;

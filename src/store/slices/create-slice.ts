@@ -6,12 +6,23 @@ import {createInitialState} from '../types';
 export const create = createAsyncThunk(
   'contacts/create',
   async (payload: Omit<Contact, 'id'>) => {
-    const response = await fetch('https://contact.herokuapp.com/contact', {
-      method: 'post',
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch('https://contact.herokuapp.com/contact', {
+        method: 'post',
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        return {
+          message: 'Success',
+        };
+      } else {
+        console.error('Failed to post data');
+      }
+    } catch (error) {
+      console.log({error});
+      throw error;
+    }
   },
 );
 
@@ -32,9 +43,15 @@ const createContactSlice = createSlice({
       state.error = action.error.message;
     });
   },
-  reducers: {},
+  reducers: {
+    resetCreate(state) {
+      state.loading = createInitialState.loading;
+      state.message = createInitialState.message;
+      state.error = createInitialState.error;
+    },
+  },
 });
 
-// export const {addList} = createSlice.actions;
+export const {resetCreate} = createContactSlice.actions;
 export const createSelector = (state: RootState) => state.createReducer;
 export default createContactSlice.reducer;

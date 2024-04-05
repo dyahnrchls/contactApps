@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import {RootStackParamList} from '../App';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +17,7 @@ import {useAppDispatch, useAppSelector} from '../store';
 import {
   detailSelector,
   fetchDetail,
+  resetUpdate,
   update,
   updateSelector,
 } from '../store/slices';
@@ -44,6 +46,10 @@ const EditScreen: React.FC<Props> = ({
   const [age, setAge] = useState<string>('');
   // const [phoneNumber, setPhoneNumber] = useState<string>('');
 
+  const showToast = () => {
+    ToastAndroid.show('Failed update data', ToastAndroid.SHORT);
+  };
+
   const disableButton = () => {
     if (firstName.length === 0 || lastName.length === 0 || age.length === 0) {
       return true;
@@ -57,6 +63,7 @@ const EditScreen: React.FC<Props> = ({
   };
 
   const handleCancel = () => {
+    dispatch(resetUpdate());
     navigation.goBack();
   };
 
@@ -69,7 +76,7 @@ const EditScreen: React.FC<Props> = ({
       photo: contact.data?.photo ?? '',
     };
 
-    dispatch(update(payload)).then(() => navigation.goBack());
+    dispatch(update(payload));
   };
 
   const getDetail = useCallback(() => {
@@ -79,6 +86,19 @@ const EditScreen: React.FC<Props> = ({
   useEffect(() => {
     getDetail();
   }, [getDetail]);
+
+  useEffect(() => {
+    if (updateContactSelector?.message === 'success') {
+      dispatch(resetUpdate());
+      navigation.goBack();
+    }
+  }, [updateContactSelector?.message, navigation, dispatch]);
+
+  useEffect(() => {
+    if (updateContactSelector?.error) {
+      showToast();
+    }
+  }, [updateContactSelector]);
 
   useEffect(() => {
     if (contact?.data) {

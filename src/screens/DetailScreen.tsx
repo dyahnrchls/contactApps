@@ -1,11 +1,14 @@
 import React, {useCallback, useEffect} from 'react';
 import {
+  Alert,
+  BackHandler,
   Dimensions,
   Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
@@ -19,6 +22,8 @@ import {
   detailSelector,
   fetchDetail,
   remove,
+  removeSelector,
+  resetRemove,
   // removeSelector,
 } from '../store/slices';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -45,7 +50,11 @@ const DetailScreen: React.FC<Props> = ({
 
   const dispatch = useAppDispatch();
   const contacts = useAppSelector(detailSelector);
-  // const deleteState = useAppSelector(removeSelector);
+  const deleteState = useAppSelector(removeSelector);
+
+  const showToast = () => {
+    ToastAndroid.show('Failed delete data', ToastAndroid.SHORT);
+  };
 
   const handleNavigateToEdit = () => {
     navigation.navigate('Edit', {id});
@@ -55,6 +64,17 @@ const DetailScreen: React.FC<Props> = ({
     dispatch(remove(id));
   };
 
+  const deleteAlert = () => {
+    Alert.alert('Hold on!', 'Are you sure you delete this contact?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {text: 'YES', onPress: deleteContact},
+    ]);
+  };
+
   const getDetail = useCallback(() => {
     dispatch(fetchDetail(id));
   }, [dispatch, id]);
@@ -62,6 +82,34 @@ const DetailScreen: React.FC<Props> = ({
   useEffect(() => {
     getDetail();
   }, [getDetail]);
+
+  useEffect(() => {
+    if (deleteState?.message === 'success') {
+      dispatch(resetRemove());
+      navigation.goBack();
+    }
+  }, [deleteState?.message, navigation, dispatch]);
+
+  useEffect(() => {
+    if (deleteState?.error) {
+      showToast();
+    }
+  }, [deleteState]);
+
+  useEffect(() => {
+    const backAction = () => {
+      dispatch(resetRemove());
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [dispatch, navigation]);
 
   return (
     <SafeAreaView>
@@ -141,7 +189,7 @@ const DetailScreen: React.FC<Props> = ({
         <TouchableOpacity style={styles.button} onPress={handleNavigateToEdit}>
           <Text>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={deleteContact}>
+        <TouchableOpacity style={styles.button} onPress={deleteAlert}>
           <Text>Delete</Text>
         </TouchableOpacity>
       </View>

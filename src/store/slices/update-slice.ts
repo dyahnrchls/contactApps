@@ -6,12 +6,16 @@ import {updateInitialState} from '../types';
 export const update = createAsyncThunk(
   'contacts/update',
   async (payload: Omit<Contact, 'id'>) => {
-    const response = await fetch('https://contact.herokuapp.com/contact', {
-      method: 'put',
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch('https://contact.herokuapp.com/contact', {
+        method: 'put',
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
   },
 );
 
@@ -32,9 +36,15 @@ const updateContactSlice = createSlice({
       state.error = action.error.message;
     });
   },
-  reducers: {},
+  reducers: {
+    resetUpdate(state) {
+      state.loading = updateInitialState.loading;
+      state.message = updateInitialState.message;
+      state.error = updateInitialState.error;
+    },
+  },
 });
 
-// export const {addList} = updateSlice.actions;
+export const {resetUpdate} = updateContactSlice.actions;
 export const updateSelector = (state: RootState) => state.updateReducer;
 export default updateContactSlice.reducer;

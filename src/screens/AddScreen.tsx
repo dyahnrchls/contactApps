@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -7,12 +7,17 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {RootStackParamList} from '../App';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useAppDispatch, useAppSelector} from '../store';
-import {create, createSelector} from '../store/slices/create-slice';
+import {
+  create,
+  createSelector,
+  resetCreate,
+} from '../store/slices/create-slice';
 import {Contact} from '../store/types';
 
 type AddScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Add'>;
@@ -29,6 +34,10 @@ const AddScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
   const [age, setAge] = useState<string>('');
   // const [phoneNumber, setPhoneNumber] = useState<string>('');
 
+  const showToast = () => {
+    ToastAndroid.show('Failed create data', ToastAndroid.SHORT);
+  };
+
   const disableButton = () => {
     if (firstName.length === 0 || lastName.length === 0 || age.length === 0) {
       return true;
@@ -42,6 +51,7 @@ const AddScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
   };
 
   const handleCancel = () => {
+    dispatch(resetCreate());
     navigation.goBack();
   };
 
@@ -50,16 +60,43 @@ const AddScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
       firstName,
       lastName,
       age: Number(age),
-      photo: '',
+      photo:
+        'http://vignette1.wikia.nocookie.net/lotr/images/6/68/Bilbo_baggins.jpg/revision/latest?cb=20130202022550',
     };
-    const response = await fetch('https://source.unsplash.com/random/?people');
 
-    if (response) {
-      payload.photo = response.url;
+    try {
+      const response = await fetch(
+        'https://source.unsplash.com/random/?people',
+      );
+
+      console.log({imageResponse: response});
+
+      if (response.ok) {
+        const imageUrl = response.url;
+        payload.photo = imageUrl;
+      } else {
+        console.error('Failed to fetch image');
+      }
+
+      dispatch(create(payload));
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      dispatch(create(payload));
     }
-
-    dispatch(create(payload)).then(() => navigation.goBack());
   };
+
+  useEffect(() => {
+    if (createContact?.message === 'success') {
+      dispatch(resetCreate());
+      navigation.goBack();
+    }
+  }, [createContact?.message, navigation, dispatch]);
+
+  useEffect(() => {
+    if (createContact?.error) {
+      showToast();
+    }
+  }, [createContact]);
 
   return (
     <SafeAreaView>
