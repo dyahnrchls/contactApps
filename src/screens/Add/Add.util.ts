@@ -1,5 +1,10 @@
 import {ToastAndroid} from 'react-native';
-import {create, createSelector, resetCreate} from '../../store/slices';
+import {
+  create,
+  createSelector,
+  fetchLists,
+  resetCreate,
+} from '../../store/slices';
 import {useAppDispatch, useAppSelector} from '../../store';
 import {Contact} from '../../store/types';
 import {useEffect, useState} from 'react';
@@ -13,8 +18,8 @@ export const useAddUtil = (navigation: any) => {
   const [age, setAge] = useState<string>('');
   // const [phoneNumber, setPhoneNumber] = useState<string>('');
 
-  const showToast = () => {
-    ToastAndroid.show('Failed create data', ToastAndroid.SHORT);
+  const showToast = (title: string) => {
+    ToastAndroid.show(title, ToastAndroid.SHORT);
   };
 
   const disableButton = () => {
@@ -64,6 +69,8 @@ export const useAddUtil = (navigation: any) => {
 
   useEffect(() => {
     if (createContact?.message === 'success') {
+      showToast('Success update data');
+      dispatch(fetchLists());
       dispatch(resetCreate());
       navigation?.goBack();
     }
@@ -71,7 +78,7 @@ export const useAddUtil = (navigation: any) => {
 
   useEffect(() => {
     if (createContact?.error) {
-      showToast();
+      showToast('Failed create data');
     }
   }, [createContact]);
 

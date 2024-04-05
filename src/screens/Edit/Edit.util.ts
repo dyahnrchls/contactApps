@@ -22,8 +22,8 @@ export const useEditUtil = (route: any, navigation: any) => {
   const [age, setAge] = useState<string>('');
   // const [phoneNumber, setPhoneNumber] = useState<string>('');
 
-  const showToast = () => {
-    ToastAndroid.show('Failed update data', ToastAndroid.SHORT);
+  const showToast = (title: string) => {
+    ToastAndroid.show(title, ToastAndroid.SHORT);
   };
 
   const disableButton = () => {
@@ -65,14 +65,17 @@ export const useEditUtil = (route: any, navigation: any) => {
 
   useEffect(() => {
     if (updateContactSelector?.message === 'success') {
+      showToast('Success update data');
+      dispatch(fetchDetail(id));
       dispatch(resetUpdate());
+
       navigation.goBack();
     }
-  }, [updateContactSelector?.message, navigation, dispatch]);
+  }, [updateContactSelector?.message, navigation, dispatch, id]);
 
   useEffect(() => {
     if (updateContactSelector?.error) {
-      showToast();
+      showToast('Failed update data');
     }
   }, [updateContactSelector]);
 

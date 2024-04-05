@@ -3,6 +3,7 @@ import {useAppDispatch, useAppSelector} from '../../store';
 import {
   detailSelector,
   fetchDetail,
+  fetchLists,
   remove,
   removeSelector,
   resetRemove,
@@ -16,8 +17,8 @@ export const useDetailUtil = (route: any, navigation: any) => {
   const contacts = useAppSelector(detailSelector);
   const deleteState = useAppSelector(removeSelector);
 
-  const showToast = () => {
-    ToastAndroid.show('Failed delete data', ToastAndroid.SHORT);
+  const showToast = (title: string) => {
+    ToastAndroid.show(title, ToastAndroid.SHORT);
   };
 
   const handleNavigateToEdit = () => {
@@ -49,6 +50,8 @@ export const useDetailUtil = (route: any, navigation: any) => {
 
   useEffect(() => {
     if (deleteState?.message === 'success') {
+      showToast('Success delete data');
+      dispatch(fetchLists());
       dispatch(resetRemove());
       navigation.goBack();
     }
@@ -56,7 +59,7 @@ export const useDetailUtil = (route: any, navigation: any) => {
 
   useEffect(() => {
     if (deleteState?.error) {
-      showToast();
+      showToast('Failed delete data');
     }
   }, [deleteState]);
 
