@@ -15,7 +15,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useAppDispatch, useAppSelector} from '../store';
-import {detailSelector, fetchDetail} from '../store/slices';
+import {
+  detailSelector,
+  fetchDetail,
+  remove,
+  // removeSelector,
+} from '../store/slices';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let screenHeight = Dimensions.get('window').height;
@@ -40,9 +45,14 @@ const DetailScreen: React.FC<Props> = ({
 
   const dispatch = useAppDispatch();
   const contacts = useAppSelector(detailSelector);
+  // const deleteState = useAppSelector(removeSelector);
 
   const handleNavigateToEdit = () => {
     navigation.navigate('Edit', {id});
+  };
+
+  const deleteContact = () => {
+    dispatch(remove(id));
   };
 
   const getDetail = useCallback(() => {
@@ -131,7 +141,7 @@ const DetailScreen: React.FC<Props> = ({
         <TouchableOpacity style={styles.button} onPress={handleNavigateToEdit}>
           <Text>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={deleteContact}>
           <Text>Delete</Text>
         </TouchableOpacity>
       </View>

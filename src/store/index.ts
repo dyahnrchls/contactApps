@@ -4,6 +4,7 @@ import listReducer from './slices/list-slice';
 import detailReducer from './slices/detail-slice';
 import createReducer from './slices/create-slice';
 import updateReducer from './slices/update-slice';
+import removeReducer from './slices/delete-slice';
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     detailReducer,
     createReducer,
     updateReducer,
+    removeReducer,
   },
 });
 
