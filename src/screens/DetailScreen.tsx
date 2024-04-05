@@ -114,90 +114,106 @@ const DetailScreen: React.FC<Props> = ({
   return (
     <SafeAreaView>
       <StatusBar barStyle={'light-content'} />
-      <View style={styles.container}>
-        <View style={styles.photoContainer}>
-          {contacts?.data?.photo?.includes('http') ? (
-            <Image
-              source={{
-                uri: contacts?.data?.photo,
-              }}
-              style={styles.photo}
-            />
-          ) : (
-            <Ionicons
-              name="person-circle-sharp"
-              size={150}
-              color={'#C7C8CC'}
-              style={styles.noPhoto}
-            />
-          )}
+      {contacts?.loading ? (
+        <View style={styles.loadingContainer}>
+          <Text>Loading...</Text>
         </View>
-        <View style={styles.cardContainer}>
-          <View style={styles.card}>
-            <Text style={styles.name}>
-              {contacts?.data?.firstName + ' ' + contacts?.data?.lastName}
-            </Text>
-            <Text>{contacts?.data?.age}</Text>
-            <Text style={styles.number}>{'+62 812 34567891'}</Text>
-          </View>
-        </View>
-        <View style={styles.iconContainer}>
-          <Icon name="call" size={20} color={'#2C7865'} />
-          <Icon name="message" size={20} color={'#F2613F'} />
-          <Icon name="video-call" size={30} color={'#008DDA'} />
-        </View>
-        <View style={styles.callLogContainer}>
-          <Text style={styles.callLogTitle}>Call Logs</Text>
-
-          <View style={styles.callLog}>
-            <View style={styles.logInfo}>
-              <SimpleLineIcons name="call-in" />
-              <Text>Incoming Call</Text>
+      ) : (
+        <>
+          <View style={styles.container}>
+            <View style={styles.photoContainer}>
+              {contacts?.data?.photo?.includes('http') ? (
+                <Image
+                  source={{
+                    uri: contacts?.data?.photo,
+                  }}
+                  style={styles.photo}
+                />
+              ) : (
+                <Ionicons
+                  name="person-circle-sharp"
+                  size={150}
+                  color={'#C7C8CC'}
+                  style={styles.noPhoto}
+                />
+              )}
             </View>
-            <Text>April 4, 16:46</Text>
-          </View>
-
-          <View style={styles.callLog}>
-            <View style={styles.logInfo}>
-              <Icon name="message" />
-              <Text>Message</Text>
+            <View style={styles.cardContainer}>
+              <View style={styles.card}>
+                <Text style={styles.name}>
+                  {contacts?.data?.firstName + ' ' + contacts?.data?.lastName}
+                </Text>
+                <Text>{contacts?.data?.age}</Text>
+                <Text style={styles.number}>{'+62 812 34567891'}</Text>
+              </View>
             </View>
-
-            <Text>April 4, 15:46</Text>
-          </View>
-
-          <View style={styles.callLog}>
-            <View style={styles.logInfo}>
-              <SimpleLineIcons name="call-out" />
-              <Text>Outgoing Call</Text>
+            <View style={styles.iconContainer}>
+              <Icon name="call" size={20} color={'#2C7865'} />
+              <Icon name="message" size={20} color={'#F2613F'} />
+              <Icon name="video-call" size={30} color={'#008DDA'} />
             </View>
+            <View style={styles.callLogContainer}>
+              <Text style={styles.callLogTitle}>Call Logs</Text>
 
-            <Text>April 4, 14:46</Text>
-          </View>
+              <View style={styles.callLog}>
+                <View style={styles.logInfo}>
+                  <SimpleLineIcons name="call-in" />
+                  <Text>Incoming Call</Text>
+                </View>
+                <Text>April 4, 16:46</Text>
+              </View>
 
-          <View style={styles.callLog}>
-            <View style={styles.logInfo}>
-              <SimpleLineIcons name="call-end" />
-              <Text>Missed Call</Text>
+              <View style={styles.callLog}>
+                <View style={styles.logInfo}>
+                  <Icon name="message" />
+                  <Text>Message</Text>
+                </View>
+
+                <Text>April 4, 15:46</Text>
+              </View>
+
+              <View style={styles.callLog}>
+                <View style={styles.logInfo}>
+                  <SimpleLineIcons name="call-out" />
+                  <Text>Outgoing Call</Text>
+                </View>
+
+                <Text>April 4, 14:46</Text>
+              </View>
+
+              <View style={styles.callLog}>
+                <View style={styles.logInfo}>
+                  <SimpleLineIcons name="call-end" />
+                  <Text>Missed Call</Text>
+                </View>
+
+                <Text>April 4, 13:46</Text>
+              </View>
             </View>
-
-            <Text>April 4, 13:46</Text>
           </View>
-        </View>
-      </View>
-      <View style={styles.footerContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleNavigateToEdit}>
-          <Text>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={deleteAlert}>
-          <Text>Delete</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.footerContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleNavigateToEdit}>
+              <Text>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={deleteAlert}>
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     backgroundColor: 'white',
     height: '100%',
