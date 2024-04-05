@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {
-  Dimensions,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -8,68 +7,85 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import {RootStackParamList} from '../App';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useAppDispatch, useAppSelector} from '../store';
+import {detailSelector, fetchDetail} from '../store/slices';
+import {RouteProp} from '@react-navigation/native';
 
-let screenHeight = Dimensions.get('window').height;
-let screenWidth = Dimensions.get('window').width;
-
-type EditScreenRouteProp = StackNavigationProp<RootStackParamList, 'Edit'>;
+type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
+type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
 
 type Props = {
-  navigation: EditScreenRouteProp;
+  route: EditScreenRouteProp;
+  navigation: EditScreenNavigationProp;
 };
-const EditScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
+const EditScreen: React.FC<Props> = ({
+  navigation,
+  route,
+}): React.JSX.Element => {
+  const id = route?.params?.id ?? '';
+
+  const dispatch = useAppDispatch();
+  const contacts = useAppSelector(detailSelector);
+
   const handleCancel = () => {
     navigation.goBack();
   };
 
+  const getDetail = useCallback(() => {
+    dispatch(fetchDetail(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    getDetail();
+  }, [getDetail]);
+
   return (
     <SafeAreaView>
       <StatusBar barStyle={'light-content'} />
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingTop: 16,
-          paddingHorizontal: 16,
-          backgroundColor: 'white',
-        }}>
+      <View style={styles.container}>
         <TouchableOpacity onPress={handleCancel}>
-          <Text style={{color: '#2C7865', fontSize: 16}}>Cancel</Text>
+          <Text style={styles.upperButton}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={{color: '#2C7865', fontSize: 16}}>Done</Text>
+          <Text style={styles.upperButton}>Done</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
+      <View style={styles.content}>
         <TouchableOpacity style={styles.photoContainer}>
-          <Icon name="person-circle-sharp" size={150} color={'#C7C8CC'} />
+          {contacts?.data?.photo?.includes('http') ? (
+            <Image
+              source={{
+                uri: contacts?.data?.photo,
+              }}
+              style={styles.photo}
+            />
+          ) : (
+            <Icon name="person-circle-sharp" size={150} color={'#C7C8CC'} />
+          )}
         </TouchableOpacity>
-        <View
-          style={{
-            padding: 8,
-            display: 'flex',
-            gap: 8,
-            flexDirection: 'column',
-          }}>
-          <View
-            style={{backgroundColor: '#F6F5F5', padding: 8, borderRadius: 4}}>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputContent}>
             <TextInput
               placeholder="First Name"
-              style={{borderBottomWidth: 0.2, borderBottomColor: '#DDDDDD'}}
+              defaultValue={contacts?.data?.firstName}
+              style={styles.inputBorder}
             />
-            <TextInput placeholder="Last Name" />
+            <TextInput
+              placeholder="Last Name"
+              defaultValue={contacts?.data?.lastName}
+            />
           </View>
-          <View
-            style={{backgroundColor: '#F6F5F5', padding: 4, borderRadius: 4}}>
+          <View style={styles.inputContent}>
             <TextInput
               placeholder="Age"
               keyboardType="number-pad"
-              style={{borderBottomWidth: 0.2, borderBottomColor: '#DDDDDD'}}
+              style={styles.inputBorder}
+              defaultValue={contacts?.data?.age?.toString()}
             />
             <TextInput placeholder="Mobile Phone" keyboardType="number-pad" />
           </View>
@@ -81,6 +97,15 @@ const EditScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+  },
+  upperButton: {color: '#2C7865', fontSize: 16},
+  content: {
     backgroundColor: 'white',
     height: '100%',
   },
@@ -89,76 +114,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  photo: {
-    height: (30 / 100) * screenHeight,
-    width: (30 / 100) * screenHeight,
-    borderRadius: 10000,
-  },
-  cardContainer: {
+  inputContainer: {
+    padding: 8,
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-    top: -40,
-  },
-  card: {
-    width: (70 / 100) * screenWidth,
-    padding: 16,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    textAlign: 'center',
-    display: 'flex',
+    gap: 8,
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
   },
-  name: {
-    fontSize: 18,
-    color: 'black',
+  inputContent: {
+    backgroundColor: '#F6F5F5',
+    padding: 8,
+    borderRadius: 4,
   },
-  number: {
-    color: 'black',
-    paddingTop: 18,
+  inputBorder: {
+    borderBottomWidth: 0.2,
+    borderBottomColor: '#DDDDDD',
   },
-  iconContainer: {
-    top: -20,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 16,
-  },
-  callLogContainer: {
-    paddingHorizontal: 16,
-  },
-  callLogTitle: {
-    fontSize: 16,
-    paddingBottom: 16,
-    fontWeight: '500',
-  },
-  callLog: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    fontSize: 12,
-  },
-  footerContainer: {
-    position: 'absolute',
-    display: 'flex',
-    flexDirection: 'row',
-    bottom: 0,
-    width: '100%',
-    borderTopWidth: 0.2,
-    backgroundColor: 'white',
-  },
-  button: {
-    width: (50 / 100) * screenWidth,
-    paddingVertical: 16,
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: 18,
+  photo: {
+    width: 150,
+    height: 150,
+    borderRadius: 150,
+    resizeMode: 'cover',
   },
 });
 

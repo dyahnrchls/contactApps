@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {
+  RefreshControl,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -42,13 +43,12 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
     getList();
   }, [getList]);
 
-  return contacts?.loading ? (
-    <View style={styles.loadingContainer}>
-      <Text>Loading...</Text>
-    </View>
-  ) : (
+  return (
     <SafeAreaView>
       <AlphabetList
+        refreshControl={
+          <RefreshControl refreshing={contacts?.loading} onRefresh={getList} />
+        }
         style={styles.container}
         data={contacts?.list?.map(item => ({
           value: item.firstName + ' ' + item.lastName,

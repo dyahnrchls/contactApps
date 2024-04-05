@@ -152,7 +152,9 @@ const styles = StyleSheet.create({
   },
   photo: {
     height: (40 / 100) * screenHeight,
+    width: screenWidth,
     borderRadius: 60,
+    resizeMode: 'cover',
   },
   noPhoto: {
     marginBottom: 40,
