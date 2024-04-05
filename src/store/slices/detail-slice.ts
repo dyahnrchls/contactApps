@@ -4,7 +4,7 @@ import {Contact} from '../types/list.types';
 import {detailInitialState} from '../types';
 
 export const fetchDetail = createAsyncThunk(
-  'details/fetchDetail',
+  'contacts/fetchDetail',
   async (id: string) => {
     const response = await fetch(`https://contact.herokuapp.com/contact/${id}`);
     const data = await response.json();

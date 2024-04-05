@@ -1,13 +1,13 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {Contact} from '../types/list.types';
-import {createInitialState} from '../types';
+import {updateInitialState} from '../types';
 
-export const create = createAsyncThunk(
-  'contacts/create',
+export const update = createAsyncThunk(
+  'contacts/update',
   async (payload: Omit<Contact, 'id'>) => {
     const response = await fetch('https://contact.herokuapp.com/contact', {
-      method: 'post',
+      method: 'put',
       body: JSON.stringify(payload),
     });
     const data = await response.json();
@@ -15,18 +15,18 @@ export const create = createAsyncThunk(
   },
 );
 
-const createContactSlice = createSlice({
-  name: 'create',
-  initialState: createInitialState,
+const updateContactSlice = createSlice({
+  name: 'update',
+  initialState: updateInitialState,
   extraReducers: builder => {
-    builder.addCase(create.pending, state => {
+    builder.addCase(update.pending, state => {
       state.loading = true;
     });
-    builder.addCase(create.fulfilled, state => {
+    builder.addCase(update.fulfilled, state => {
       state.loading = false;
       state.message = 'success';
     });
-    builder.addCase(create.rejected, (state, action) => {
+    builder.addCase(update.rejected, (state, action) => {
       state.loading = false;
       state.message = null;
       state.error = action.error.message;
@@ -35,6 +35,6 @@ const createContactSlice = createSlice({
   reducers: {},
 });
 
-// export const {addList} = createSlice.actions;
-export const createSelector = (state: RootState) => state.createReducer;
-export default createContactSlice.reducer;
+// export const {addList} = updateSlice.actions;
+export const updateSelector = (state: RootState) => state.updateReducer;
+export default updateContactSlice.reducer;

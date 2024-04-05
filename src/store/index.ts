@@ -3,12 +3,14 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import listReducer from './slices/list-slice';
 import detailReducer from './slices/detail-slice';
 import createReducer from './slices/create-slice';
+import updateReducer from './slices/update-slice';
 
 const store = configureStore({
   reducer: {
     listReducer,
     detailReducer,
     createReducer,
+    updateReducer,
   },
 });
 

@@ -2,7 +2,7 @@ import {PayloadAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {Contact, listInitialState} from '../types/list.types';
 
-export const fetchLists = createAsyncThunk('lists/fetchLists', () => {
+export const fetchLists = createAsyncThunk('contacts/fetchLists', () => {
   const res = fetch('https://contact.herokuapp.com/contact').then(data =>
     data.json(),
   );
