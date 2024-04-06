@@ -15,10 +15,10 @@ export const CallLog = ({icon, title, date, testID}: CallLogProps) => {
         {icon && (
           <View {...(testID && {testID: `${testID}-info-icon`})}>{icon}</View>
         )}
-        <Text>{title}</Text>
+        <Text style={styles.colorText}>{title}</Text>
       </View>
 
-      <Text>{date}</Text>
+      <Text style={styles.colorText}>{date}</Text>
     </View>
   );
 };
@@ -36,5 +36,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     alignItems: 'center',
+  },
+  colorText: {
+    color: 'gray',
   },
 });

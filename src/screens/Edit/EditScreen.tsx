@@ -71,24 +71,33 @@ const EditScreen: React.FC<Props> = ({
             <TextInput
               placeholder="First Name"
               defaultValue={contact?.data?.firstName}
-              style={styles.inputBorder}
+              style={styles.inputWithBorder}
               onChangeText={setFirstName}
+              placeholderTextColor={'gray'}
             />
             <TextInput
               placeholder="Last Name"
               defaultValue={contact?.data?.lastName}
               onChangeText={setLastName}
+              placeholderTextColor={'gray'}
+              style={styles.input}
             />
           </View>
           <View style={styles.inputContent}>
             <TextInput
               placeholder="Age"
               keyboardType="number-pad"
-              style={styles.inputBorder}
+              style={styles.inputWithBorder}
               defaultValue={contact?.data?.age?.toString()}
               onChangeText={setAge}
+              placeholderTextColor={'gray'}
             />
-            <TextInput placeholder="Mobile Phone" keyboardType="number-pad" />
+            <TextInput
+              placeholder="Mobile Phone"
+              keyboardType="number-pad"
+              placeholderTextColor={'gray'}
+              style={styles.input}
+            />
           </View>
         </View>
       </View>
@@ -103,7 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 16,
     paddingHorizontal: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
   upperButton: {
     color: '#2C7865',
@@ -114,7 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   content: {
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
     height: '100%',
   },
   photoContainer: {
@@ -129,13 +138,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   inputContent: {
-    backgroundColor: '#F6F5F5',
+    backgroundColor: '#DDDDDD',
     padding: 8,
     borderRadius: 4,
   },
-  inputBorder: {
+  inputWithBorder: {
     borderBottomWidth: 0.2,
-    borderBottomColor: '#DDDDDD',
+    borderBottomColor: 'white',
+    color: 'black',
+  },
+  input: {
+    color: 'black',
   },
   photo: {
     width: 150,

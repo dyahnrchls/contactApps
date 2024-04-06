@@ -47,7 +47,7 @@ const DetailScreen: React.FC<Props> = ({
       <StatusBar barStyle={'light-content'} />
       {contacts?.loading ? (
         <View style={styles.loadingContainer}>
-          <Text>Loading...</Text>
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
       ) : (
         <>
@@ -89,25 +89,25 @@ const DetailScreen: React.FC<Props> = ({
               <CallLog
                 title="Incoming Call"
                 date="April 4, 16:46"
-                icon={<SimpleLineIcons name="call-in" />}
+                icon={<SimpleLineIcons name="call-in" color="gray" />}
               />
 
               <CallLog
                 title="Message"
                 date="April 4, 15:46"
-                icon={<Icon name="message" />}
+                icon={<Icon name="message" color="gray" />}
               />
 
               <CallLog
                 title="Outgoing Call"
                 date="April 4, 14:46"
-                icon={<SimpleLineIcons name="call-out" />}
+                icon={<SimpleLineIcons name="call-out" color="gray" />}
               />
 
               <CallLog
                 title="Missed Call"
                 date="April 4, 13:46"
-                icon={<SimpleLineIcons name="call-end" />}
+                icon={<SimpleLineIcons name="call-end" color="gray" />}
               />
             </View>
           </View>
@@ -137,9 +137,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  loadingText: {
+    color: 'black',
   },
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
     height: '100%',
   },
   photoContainer: {
@@ -207,7 +211,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     borderTopWidth: 0.2,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
   button: {
     width: (50 / 100) * screenWidth,

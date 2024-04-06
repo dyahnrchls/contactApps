@@ -50,19 +50,24 @@ const HomeScreen: React.FC<Props> = ({navigation}): React.JSX.Element => {
             <Text style={styles.contactTitle}> {section.title}</Text>
           </View>
         )}
+        indexLetterStyle={styles.indexLetterStyle}
       />
       <TouchableOpacity
         style={styles.addButtonContainer}
         onPress={handleNavigateToAdd}>
-        <Icon name="add-circle" size={50} color={'#2C7865'} />
+        <Icon name="add-circle" size={70} color={'#2C7865'} />
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  indexLetterStyle: {
+    color: 'gray',
+    fontSize: 14,
+  },
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
   contactContainer: {
     display: 'flex',
@@ -79,10 +84,12 @@ const styles = StyleSheet.create({
   },
   contactTitleContainer: {
     paddingTop: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     borderBottomWidth: 0.2,
   },
   contactTitle: {
+    fontSize: 20,
+    color: 'gray',
     paddingBottom: 8,
     borderBottomWidth: 0.2,
   },
