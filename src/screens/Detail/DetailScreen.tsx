@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingBottom: 16,
     fontWeight: '500',
+    color: 'gray',
   },
   footerContainer: {
     position: 'absolute',
